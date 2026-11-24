@@ -2,6 +2,14 @@
 
 `designos/renderer-blade` is a Laravel-oriented PHP renderer for DesignOS `PageDocument` arrays. It deliberately does not depend on the TypeScript editor, compiler, or React/Vue renderers.
 
+## Install
+
+```sh
+composer require designos/renderer-blade
+```
+
+Laravel discovers `RendererBladeServiceProvider` automatically. The package is published from this repository through Packagist; release versions are Git tags such as `v0.1.0`.
+
 ## Use
 
 Install the package in a Laravel 13 app, register `RendererBladeServiceProvider` through Composer package discovery, then inject `BladePageRenderer`:
