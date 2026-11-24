@@ -22,7 +22,12 @@ final class GeneratedComponentRegistry
             if (!is_string($type) || !is_string($view) || !str_contains($view, '::')) {
                 throw new RuntimeException('Generated DesignOS components registry contains an invalid view mapping.');
             }
-            if (preg_match('/^[A-Za-z][A-Za-z0-9._-]*::[A-Za-z][A-Za-z0-9._-]*$/', $view) !== 1 || str_contains($view, '..')) {
+            if (
+                preg_match('/^[A-Za-z][A-Za-z0-9._-]*::[A-Za-z][A-Za-z0-9._\/-]*$/', $view) !== 1
+                || str_contains($view, '..')
+                || str_contains($view, '//')
+                || str_ends_with($view, '/')
+            ) {
                 throw new RuntimeException("Generated DesignOS view mapping for '{$type}' is invalid.");
             }
         }
