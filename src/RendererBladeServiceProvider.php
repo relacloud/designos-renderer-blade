@@ -11,18 +11,31 @@ final class RendererBladeServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(BladePageRenderer::class);
+        $this->app->singleton(GeneratedComponentRegistry::class, function (): GeneratedComponentRegistry {
+            $namespace = (string) config('designos.view_namespace', 'designos');
+            $this->assertValidNamespace($namespace);
+
+            return new GeneratedComponentRegistry(
+                $this->app->resourcePath('views/vendor/' . $namespace),
+            );
+        });
     }
 
     public function boot(): void
     {
         $namespace = (string) config('designos.view_namespace', 'designos');
-        if (preg_match('/^[A-Za-z][A-Za-z0-9_-]*$/', $namespace) !== 1) {
-            throw new \InvalidArgumentException('DesignOS Laravel view namespace must be a simple namespace identifier.');
-        }
+        $this->assertValidNamespace($namespace);
 
         $this->loadViewsFrom(
             $this->app->resourcePath('views/vendor/' . $namespace),
             $namespace,
         );
+    }
+
+    private function assertValidNamespace(string $namespace): void
+    {
+        if (preg_match('/^[A-Za-z][A-Za-z0-9_-]*$/', $namespace) !== 1) {
+            throw new \InvalidArgumentException('DesignOS Laravel view namespace must be a simple namespace identifier.');
+        }
     }
 }
