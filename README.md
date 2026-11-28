@@ -28,6 +28,18 @@ $html = $renderer->render(
 );
 ```
 
+### Project a design theme
+
+The page renderer produces page HTML. The host application still owns the outer layout and loads the separate DesignOS `DesignDocument`. Use `DesignThemeCssVariables` to project that document's grouped color, font, and radius tokens into safe CSS custom properties for the layout:
+
+```php
+use DesignOS\RendererBlade\DesignThemeCssVariables;
+
+$themeCss = DesignThemeCssVariables::fromDesign($designDocument);
+```
+
+Then apply the returned string to the page shell, for example with `<body style="{{ $themeCss }}">`. The helper validates the versioned document, provides defaults for missing or invalid tokens, derives accent RGB values and related colors, sanitizes font names, and bounds radii. Use `fromTokens($tokens)` when the grouped token array has already been extracted. This API does not change or wrap `BladePageRenderer::render()` because theme CSS belongs to the host page layout, not the rendered page-node HTML.
+
 The component map is trusted host configuration. Never derive view names from a serialized node type. For a mapped type, the Blade view receives `node`, `id`, `type`, `props`, `children`, `slots`, `parentId`, `slotName`, plus the supplied context values. `children` and each `slots[name]` are arrays of rendered child HTML strings, preserving child order and slot identity.
 
 `GeneratedComponentRegistry` loads and validates the `components.json` and `registry.json` artifacts emitted by a DesignOS Blade compiler. Laravel package discovery registers it as a singleton rooted at `resources/views/vendor/<namespace>`, so applications do not need to duplicate generated-registry loading or validation in their own `App\Support` classes.
